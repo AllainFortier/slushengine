@@ -147,6 +147,9 @@ class Motor(sBoard):
         speedVal = self.spdCalc(spd)
         self.xfer(LReg.RUN | dir)
         if speedVal > 0xfffff: speedVal = 0xfffff
+
+        speedVal = int(round(speedVal))
+        
         self.xfer(speedVal >> 16)
         self.xfer(speedVal >> 8)
         self.xfer(speedVal)
@@ -313,13 +316,16 @@ class Motor(sBoard):
     ''' utility function '''
     def param(self, value, bit_len):
         ret_value = 0
-
+        
         byte_len = bit_len/8
         if (bit_len%8 > 0): byte_len +=1
 
         mask = 0xffffffff >> (32 - bit_len)
         if value > mask: value = mask
-
+        
+        value = int(round(value))
+        print(value)
+        
         if byte_len >= 3.0:
             temp = self.xfer(value >> 16)
             ret_value |= temp << 16
